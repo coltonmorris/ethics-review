@@ -19,3 +19,8 @@ screencapture -i tmp.jpg && ./script.sh
 
 + Android
   - IDK GOOD LUCK LUL
+
+
+## TODO
++ click on the first result and search for the answers there
++ Have browser already running to increase speed
