@@ -1,15 +1,24 @@
 import requests
 from bs4 import BeautifulSoup
-import argparse
 
-parser = argparse.ArgumentParser(description='Get Google Count.')
-parser.add_argument('word', help='word to count')
-args = parser.parse_args()
+output = ""
+f = open("ocr_output.txt")
+data = f.readlines()
+for line in data:
+    # parse input, assign values to variables
+    value = line
+    output += value
+f.close()
 
-r = requests.get('http://www.google.com/search',
-  params={'q':'"'+args.word+'"',
-    "tbs":"li:1"}
-)
+output = output.split("\n\n")
+output[0] = output[0].replace("\n", " ")
 
-soup = BeautifulSoup(r.text, "html.parser")
-print soup.find('div',{'id':'resultStats'}).text
+for i in range(1,len(output)):
+    r = requests.get('http://www.google.com/search',
+            params={'q':'"'+output[0]+output[i]+'"',
+                "tbs":"li:1"}
+            )
+
+    soup = BeautifulSoup(r.text, "html.parser")
+    print soup.find('div',{'id':'resultStats'}).text
+
