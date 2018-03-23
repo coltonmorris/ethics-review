@@ -14,15 +14,16 @@ let data = fs.readFileSync(filePath, 'utf-8')
 
 data = data.trim().split('\n')
 console.log('Read from file: \n', data)
-// remove first newline
+// remove first newline, which delimits the question
 let endOfQuestionIndex = data.findIndex((line) => line === '' )
 question = data.slice(0, endOfQuestionIndex).join(' ')
+
 answers = data.slice(endOfQuestionIndex+1, data.length)
 answers = _.compact(answers)
 
-// tODO strip white space from answers array
-
+console.log('**********************************')
 console.log('************ PARSED **************')
+console.log('**********************************')
 console.log('answers: ', answers)
 console.log('question: ', question)
 
@@ -46,25 +47,25 @@ let getResults = async (question, answer) => {
   return { answer: answer, html: html}
 };
 
-function compareResult(a,b) {
-  a = parseInt(a.html)
-  b = parseInt(b.html)
-  if (a < b)
-    return -1;
-  if (a > b)
-    return 1;
-  return 0;
-}
 
 Promise.map(answers, async (answer) => {
   return getResults(question, answer)
 }).then((results) => {
-  /* do something here with the finished results */
-  results.sort(compareResult)
+  results.sort((a,b) => {
+    a = parseInt(a.html)
+    b = parseInt(b.html)
+    if (a < b)
+      return -1;
+    if (a > b)
+      return 1;
+    return 0;
+  })
+
   console.log('***********************************')
   console.log('************ Results **************')
   console.log('***********************************')
   console.log(results)
+  console.log('')
   console.log('Smallest: ', results[0])
   console.log('Largest: ', results[results.length-1])
 })
