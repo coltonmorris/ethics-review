@@ -1,6 +1,6 @@
 # Ethics Review
 
-With mass psychological manipulation at the fore-front of computer science ethics, I've decided to explore that by cheating at a trivia game.
+With mass psychological manipulation at the fore-front of computer science ethics, it's time to explore another ethics problem by cheating at a trivia game.
 
 ## Setup
 
