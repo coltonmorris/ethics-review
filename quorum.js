@@ -52,22 +52,15 @@ function mainQuorum(question, answers) {
   // TODO implement the rxjs method  takeUntilWithTime to finish the quorum before the 10 seconds is up
   // TODO look into using combineLatest
   console.log('methods: ', methods)
-  Observable.from(_.map(methods, (method) => (
-    // TODO from?
-    // Observable.of(method(question, answers))
-    method(question, answers)
-    // let methodResult = Observable.from(method(question, answers))
-    // methodResult.subscribe(result => {
-    //   saveResult(result)
-    //   evaluateQuorum()
-    // })
-    // return methodResult
-  )))
-  // TODO START RIGHT HERE. merge? the results of the lodash map
-  //    and whenever one of those methods emits from it's observer,
-  //    saveResult, and evaluate.
-    .mergeMap(val => Observable.of('hi'))
-    .subscribe((x) => {
-      console.log('in main quorum: ', x)
-  })
+  _.map(methods, (method) => (
+    Observable.of(method(question, answers)).subscribe(result => {
+      console.log('in result: ', result)
+    })
+  ))
 }
+
+// methodResult.subscribe(result => {
+//   saveResult(result)
+//   evaluateQuorum()
+// })
+// return methodResult
