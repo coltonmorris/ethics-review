@@ -22,6 +22,7 @@ screencapture -i tmp.jpg && ./script.sh
 
 
 ## TODO
++ Have program always running and just watching `ocr_output.txt`. This allows puppeteer to already have browser connections.
 + Have browser already running to increase speed
 + handle parsing of image better. The question seems to always end with a question mark, so use that instead of splitting into lines and looking for blank ones.
 + Make a quorum that decides on the different solutions.

@@ -7,15 +7,18 @@
     "babel-preset-env": "^1.6.1",
     "bluebird": "^3.5.1",
     "lodash": "^4.17.5",
-    "puppeteer": "^1.2.0"
+    "puppeteer": "^1.2.0",
+    "rxjs": "^6.0.0-beta.2",
+    "rxjs-compat": "^6.0.0-beta.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-es2017": "^6.24.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "screencapture -i tmp.jpg && tesseract tmp.jpg ocr_output -l eng && babel-node query.js"
+    "test": "echo \"Run npm start, then edit the ocr_output.txt file\"",
+    "start": "babel-node main.js",
+    "screenshot": "screencapture -i tmp.jpg && tesseract tmp.jpg ocr_output -l eng"
   },
   "repository": {
     "type": "git",
