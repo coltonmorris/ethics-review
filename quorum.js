@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Rx'
 import { mergeMap, map } from 'rxjs/operators';
 import util from 'util'
 import methods from './methods'
+import colors from 'colors'
 
 
 // formats the quorums result to whatever we want
@@ -83,7 +84,26 @@ export default (question, answers) => {
     // just received a new result from a method
     let finalGuess = evaluateQuorum(methods, answers)
     let quorumResult = saveQuorumResults(methods, question, answers, finalGuess)
-    console.log("Quorum Result:\n", util.inspect(quorumResult, false, null))
+    printQuorumResult(quorumResult)
     return quorumResult
+  })
+}
+
+let printQuorumResult = (result) => {
+  // console.log("Quorum Result:\n", util.inspect(quorumResult, false, null))
+  console.log('\t\t\tQuorum Result:'.black)
+
+
+  _.mapKeys(result, (value, key) => {
+    if (key == 'finalGuess') {
+      _.mapKeys(value, (innerValue, innerKey) => {
+        console.log('yo: ', innerValue, innerKey)
+        if (innerKey == 'smallest') console.log(innerKey.red, innerValue.red)
+        if (innerKey == 'middle') console.log(innerKey.yellow, innerValue.yellow)
+        if (innerKey == 'largest') console.log(innerKey.green, innerValue.green)
+      })
+    } else {
+      console.log(key.black, util.inspect(result[key],false,null))
+    }
   })
 }
