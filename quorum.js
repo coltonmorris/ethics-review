@@ -76,6 +76,7 @@ let evaluateQuorum = (methods, answers) => {
 export default (question, answers) => {
   // pass each method the question and answers. They will return an object. Save that object 
 
+  // TODO mock api calls for intensive testing. google locks us out
   // TODO make a method that just sleeps 10 seconds
   // TODO implement the rxjs method  takeUntilWithTime to finish the quorum before the 10 seconds is up
   return Observable.combineLatest(..._.map(methods, (method) => (
@@ -90,20 +91,30 @@ export default (question, answers) => {
 }
 
 let printQuorumResult = (result) => {
-  // console.log("Quorum Result:\n", util.inspect(quorumResult, false, null))
   console.log('\t\t\tQuorum Result:'.black)
-
 
   _.mapKeys(result, (value, key) => {
     if (key == 'finalGuess') {
-      _.mapKeys(value, (innerValue, innerKey) => {
-        console.log('yo: ', innerValue, innerKey)
-        if (innerKey == 'smallest') console.log(innerKey.red, innerValue.red)
-        if (innerKey == 'middle') console.log(innerKey.yellow, innerValue.yellow)
-        if (innerKey == 'largest') console.log(innerKey.green, innerValue.green)
+      console.log(key.black)
+      printMethodResult(value)
+    } else if (key == 'methods') {
+      console.log(key.black)
+      _.map(value, (method) => {
+        console.log('\t',colors.black(method.method))
+        printMethodResult(method)
       })
     } else {
       console.log(key.black, util.inspect(result[key],false,null))
     }
   })
+}
+
+let printMethodResult = (method) => {
+  printResult(colors.red, method.smallest)
+  printResult(colors.yellow, method.middle)
+  printResult(colors.green, method.largest)
+}
+
+let printResult = (color, result) => {
+  console.log('\t',result.answer, color(result.weight))
 }
