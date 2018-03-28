@@ -8,14 +8,8 @@ let WordPOS = require('wordpos')
 export default (question, answers) => {
   return Observable.from(getNouns(question))
     .map(nouns => {
-      console.log('~~nouns', nouns) //ok
       return Observable.forkJoin(_.map(answers, (answer) => {
-          console.log('iter', answer)
           return Observable.from(getBody(nouns, answer))
-          .map((val) => {
-            console.log('^^^^^^^', val)
-            return val
-          })
       })).map(results => {
           return transfromResults(results)
         })
@@ -27,18 +21,22 @@ let getNouns = async(question) => {
   return await wordpos.getNouns(question, nouns => nouns)
 }
 
-const count = (str, ans) => {
+const tally = (str, ans) => {
   let re = new RegExp(ans, "gi")
-  return str.match(re).length
+  let result = str.match(re)
+  if(!result){ return 0 }
+  else { return result.length }
 }
 
 let getBody = async(questionNouns, answer) => {
   let transAnswer = _.replace(_.escape(answer), " ", "%20")
   let url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&titles=${transAnswer}`
 
-  console.log('before awiat')
-  return await axios.get(url)
-};
+  let result = await axios.get(url)
+  const pageData = result.data.query.pages[Object.keys(result.data.query.pages)[0]].extract
+  let total = tally(pageData, answer)
+  return { answer: answer, count: tally(pageData, answer) }
+}
 
 let transfromResults = (results) => {
   results.sort((a,b) => {
