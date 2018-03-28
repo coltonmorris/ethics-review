@@ -35,11 +35,17 @@ let getBody = async(questionNouns, answer) => {
   let url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&titles=${transAnswer}`
 
   let result = await axios.get(url)
-  const pageData = result.data.query.pages[Object.keys(result.data.query.pages)[0]].extract
+  const pageData = result.data.query.pages[Object.keys(result.data.query.pages)[0]]
+  let body
+  if(pageData.hasOwnProperty('missing')){
+    body = ""
+  } else {
+    body = pageData.extract
+  }
 
   let total = 0
   questionNouns.forEach((noun) => {
-    total += tally(pageData, noun)
+    total += tally(body, noun)
   })
 
   return { answer: answer, count: total }
