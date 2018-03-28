@@ -3,31 +3,36 @@ import _ from 'lodash'
 import { Observable } from 'rxjs/Rx'
 import { mergeMap, map } from 'rxjs/operators'
 import puppeteer from 'puppeteer'
+import axios from 'axios'
 
-let main = async() => {
-  let question = 'why though?'
-  let answer = 'cuz'
-  let queryUrl = `https://www.bing.com/search?q=${question} ${answer}`
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  await page.goto(queryUrl)
+let answers = ['yorkshire pudding', 'cabbage patch', 'south america']
 
-  const resultsSelector = '.sb_count'
-  await page.waitForSelector(resultsSelector)
+let getBody = async(answer) => {
+  let questionNouns = ['breakfast', 'england']
+  let transAnswer = _.replace(_.escape(answer), " ", "%20")
+  let url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&titles=${transAnswer}`
 
- // Extract the results from the page.
-  let count = await page.evaluate(resultsSelector => {
-    return document.querySelector(resultsSelector).innerHTML
-  }, resultsSelector)
+  console.log('before awiat')
+  return await axios.get(url)
+};
 
-  return count.split(' ')[0].replace(/,/g,'')
+let getNouns = async(question) => {
+  let wordpos = new WordPOS()
+  return await wordpos.getNouns(question, nouns => nouns)
 }
 
-// main().then((res) => {
-Observable.from(main()).map((res) => {
-  console.log('hi')
+Observable.from(getNouns(question))
+  .map(nouns => {
+    // console.log('~~nouns', nouns) //ok
+    return Observable.forkJoin(_.map(answers, (answer) => {
+        // console.log('iter', answer)
+        return Observable.from(getBody(nouns, answer))
+    })).map(results => {
+        return transfromResults(results)
+      })
+  })
+
+Observable.from(getBody()).map((res) => {
+  console.log('hi', Object.keys(res))
   return res
-}).subscribe((res) => {
-  console.log('subscribe')
-  console.log(res)
 })

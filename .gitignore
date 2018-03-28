@@ -2,3 +2,4 @@ tmp.jpg
 ocr_output*
 quorumHistory.csv
 node_modules/
+package-lock.json

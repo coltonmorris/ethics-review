@@ -6,4 +6,5 @@ import startWikipedia from './Wikipedia'
 export default [
   numberOfGoogleResults,
   startWikipedia,
-  startBingResults, ]
+  startBingResults,
+]
