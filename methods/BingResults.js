@@ -16,27 +16,26 @@ export default (question, answers) => {
 }
 
 let getResults =  async (question, answer) => {
-  // TODO remove this when doing it live
-  return { answer: answer, count: 0 }
-  let queryUrl = `https://www.google.com/search?q=${question} ${answer}`
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+  let queryUrl = `https://www.bing.com/search?q=${question} ${answer}`
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.goto(queryUrl)
 
-  const resultsSelector = '#resultStats'
+  const resultsSelector = '.sb_count'
   await page.waitForSelector(resultsSelector)
 
-  // Extract the results from the page.
   let count = await page.evaluate(resultsSelector => {
     return document.querySelector(resultsSelector).innerHTML
   }, resultsSelector)
 
   count = count
-    .split(' ')[1]
+    .split(' ')[0]
     .replace(/,/g,'')
+
 
   // TODO stop closing browser, save it's connection for later
   browser.close();
-  return { answer: answer, count: count }
+  return { answer: answer, count: count}
 };
 
 let transfromResults = (results) => {
@@ -50,7 +49,7 @@ let transfromResults = (results) => {
     return 0;
   })
 
-  // check if count is 0
+  // check for empty count. means there was an error?
   results = _.map(results, (result) => {
     if (result.count == 0) return { ...result, count: 1 }
     return result
@@ -62,7 +61,7 @@ let transfromResults = (results) => {
     smallest: { answer: results[0].answer, weight: results[0].count/sum },
     middle: { answer: results[1].answer, weight: results[1].count/sum },
     largest: { answer: results[results.length-1].answer, weight: results[results.length-1].count/sum },
-    method: 'numberOfGoogleResults',
+    method: 'bingResults',
   }
   return final
 }

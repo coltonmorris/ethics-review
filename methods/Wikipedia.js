@@ -15,23 +15,7 @@ export default (question, answers) => {
 }
 
 let getResults =  async (question, answer) => {
-  return { answer: answer, count: 1000000 }
-  let queryUrl = `https://www.google.com/search?q=${question} ${answer}`
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(queryUrl);
-
-  const resultHandle = await page.$('#resultStats')
-  let count = await page.evaluate(result => result.innerHTML, resultHandle)
-
-  count = count
-    .split(' ')[1]
-    .replace(/,/g,'')
-
-
-  // TODO stop closing browser, save it's connection for later
-  browser.close();
-  return { answer: answer, count: count}
+  return { answer: answer, count: 0 }
 };
 
 let transfromResults = (results) => {
@@ -45,15 +29,18 @@ let transfromResults = (results) => {
     return 0;
   })
 
+  // check if count is 0
+  results = _.map(results, (result) => {
+    if (result.count == 0) return { ...result, count: 1 }
+    return result
+  })
+
   let sum = _.reduce(results, (val, ele) => (val + parseInt(ele.count)), 0)
 
   let final = {
-    // smallest: { answer: results[0].answer, weight: results[0].count/sum },
-    // middle: { answer: results[1].answer, weight: results[1].count/sum },
-    // largest: { answer: results[results.length-1].answer, weight: results[results.length-1].count/sum },
-    smallest: { answer: results[0].answer, weight: 0.01 },
-    middle: { answer: results[1].answer, weight: 0.09 },
-    largest: { answer: results[results.length-1].answer, weight: 0.9 },
+    smallest: { answer: results[0].answer, weight: results[0].count/sum },
+    middle: { answer: results[1].answer, weight: results[1].count/sum },
+    largest: { answer: results[results.length-1].answer, weight: results[results.length-1].count/sum },
     method: 'wikipedia',
   }
   return final

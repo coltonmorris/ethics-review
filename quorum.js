@@ -83,6 +83,7 @@ export default (question, answers) => {
     Observable.from(method(question, answers))
   ))).map(methods => {
     // just received a new result from a method
+    methods = _.compact(methods)
     let finalGuess = evaluateQuorum(methods, answers)
     let quorumResult = saveQuorumResults(methods, question, answers, finalGuess)
     printQuorumResult(quorumResult)

@@ -5,6 +5,10 @@ import path from 'path'
 import fs from 'fs'
 import util from 'util'
 import Papa from 'papaparse'
+require('events').EventEmitter.prototype._maxListeners = 100;
+import events from 'events'
+// events.EventEmitter.defaultMaxListeners = 100
+
 
 import methods from './methods'
 
@@ -45,7 +49,7 @@ fs.watchFile(ocrOutputFile, (curr, prev) => {
   console.log('**********************************')
   console.log('**********************************')
 
-  startQuorum(question, answers).subscribe((quorumResult) => {
+  startQuorum(question, answers).first().subscribe((quorumResult) => {
     // TODO have each method record it's own guesses
     // TODO have the quorum record it's own guesses
     // TODO have a user input to select the correct answer for csv's
