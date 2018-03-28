@@ -4,6 +4,7 @@
   "description": "With mass psychological manipulation at the fore-front of computer science ethics, I've decided to explore that by cheating at a trivia game.",
   "main": "query.js",
   "dependencies": {
+    "axios": "^0.18.0",
     "babel-preset-env": "^1.6.1",
     "bluebird": "^3.5.1",
     "colors": "^1.2.1",
@@ -11,7 +12,8 @@
     "papaparse": "^4.3.7",
     "puppeteer": "^1.2.0",
     "rxjs": "^6.0.0-beta.2",
-    "rxjs-compat": "^6.0.0-beta.1"
+    "rxjs-compat": "^6.0.0-beta.1",
+    "wordpos": "^1.1.6"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

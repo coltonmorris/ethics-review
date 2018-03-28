@@ -12,10 +12,6 @@ export default (question, answers) => {
       return Observable.forkJoin(_.map(answers, (answer) => {
           console.log('iter', answer)
           return Observable.from(getBody(nouns, answer))
-          .map((val) => {
-            console.log('^^^^^^^', val)
-            return val
-          })
       })).map(results => {
           return transfromResults(results)
         })
