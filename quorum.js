@@ -1,66 +1,89 @@
 import _ from 'lodash'
 import { Promise } from 'bluebird'
 import { Observable } from 'rxjs/Rx'
-import { mergeMap } from 'rxjs/operators';
-
-
+import { mergeMap, map } from 'rxjs/operators';
+import util from 'util'
 import methods from './methods'
 
-let quorumResults = {}
-export { quorumResults as quorumResults }
-// quorumResults is an object like this: {
-//   exampleResultMethod: {
-//     smallest: {answer: 'one', weight: .3},
-//     middle: {answer: 'two', weight: .1},
-//     largest: {answer: 'three', weight: .6},
-//   }
-// }
 
-export default (question, answers) => {
-  mainQuorum(question, answers)
-  // Observable.from(mainQuorum(question, answers))
-  //   .take(3)
-  //   .subscribe((x) => {
-  //     console.log('in start quorum: ', x)
-  //     console.log('in start quorum: ', x)
-  //     console.log('in start quorum: ', x)
-  //   })
-}
+// formats the quorums result to whatever we want
+let saveQuorumResults = (methods, question, answers, finalGuess) => ({
+  question: question,
+  answers: answers,
+  methods: methods,
+  finalGuess: finalGuess,
+})
 
-let saveResult = (result) => {
-  quorumResults[result.method] = _.omit(result, ['method'])
-}
 
-let evaluateQuorum = () => {
-  console.log('-- Quorum Evaluation --')
+// TODO idea for giving weights for each method:
+//    have each method record it's guesses into a csv, with the actual correct guess.
+//    calculate how often the method is correct by parsing the csv file
+//    methods that are more accurate are given more credit
 
-  // evaluate each result's largest weights
-  _.mapKeys(quorumResults, (value, key) => {
-    console.log('key: ', key)
-    console.log('Smallest: ', value.smallest)
-    console.log('Middle: ', value.middle)
-    console.log('Largest: ', value.largest)
+// calculates the odds for each answer, ending with a final guess
+let evaluateQuorum = (methods, answers) => {
+  // Populate answerWeights object
+  // answerWeights = { 'answer1': [0.3, ...] ]
+  let answerWeights = {}
+  _.map(answers, (answer) => {
+    answerWeights[answer] = { weights: [] }
+  })
+  _.map(methods, (method) => {
+    _.mapValues(_.omit(method, ['method']), (value) => {
+      answerWeights[value.answer].weights.push(value.weight) 
+    })
   })
 
-  console.log('-----------------------')
+  // this shit is ugly. was tired and didn't bother making it pretty...
+  // calculate average and save it to finalGuess
+  let finalGuess = {
+    smallest: {},
+    middle:   {},
+    largest:  {},
+  }
+  let smallest = 0;
+  let middle = 0;
+  let largest = 0;
+  _.mapKeys(answerWeights, (value, key) => {
+    let count = 0 
+    let sum = 0
+    _.map(answerWeights[key].weights, (weight) => {
+      sum += weight
+      count++
+    })
+
+    let average = sum / count
+    answerWeights[key].average = average
+    if (average > largest) {
+      largest = average
+      finalGuess.smallest = finalGuess.middle
+      finalGuess.middle = finalGuess.largest
+      finalGuess.largest = { answer: key, averageWeight: average }
+    } else if (average > middle) {
+      middle = average
+      finalGuess.smallest = finalGuess.middle
+      finalGuess.middle = { answer: key, averageWeight: average }
+    } else {
+      smallest = average
+      finalGuess.smallest = { answer: key, averageWeight: average }
+    }
+  })
+
+  return finalGuess
 }
 
-function mainQuorum(question, answers) {
+export default (question, answers) => {
   // pass each method the question and answers. They will return an object. Save that object 
 
   // TODO make a method that just sleeps 10 seconds
   // TODO implement the rxjs method  takeUntilWithTime to finish the quorum before the 10 seconds is up
-  // TODO look into using combineLatest
-  console.log('methods: ', methods)
-  _.map(methods, (method) => (
-    Observable.of(method(question, answers)).subscribe(result => {
-      console.log('in result: ', result)
-    })
-  ))
+  return Observable.combineLatest(..._.map(methods, (method) => (
+    Observable.from(method(question, answers))
+  ))).map(methods => {
+    // just received a new result from a method
+    let finalGuess = evaluateQuorum(methods, answers)
+    let quorumResult = saveQuorumResults(methods, question, answers, finalGuess)
+    console.log("Quorum Result:\n", util.inspect(quorumResult, false, null))
+    return quorumResult
+  })
 }
-
-// methodResult.subscribe(result => {
-//   saveResult(result)
-//   evaluateQuorum()
-// })
-// return methodResult
