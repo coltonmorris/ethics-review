@@ -8,11 +8,13 @@ let WordPOS = require('wordpos')
 export default (question, answers) => {
   return Observable.from(getNouns(question))
     .map(nouns => {
-      return Observable.forkJoin(_.map(answers, (answer) => {
+      return Observable.forkJoin(
+        ..._.map(answers, (answer) => {
           return Observable.from(getBody(nouns, answer))
-      })).map(results => {
-          return transfromResults(results)
         })
+      ).map(results => {
+          return transfromResults(results)
+      })
     })
 }
 
@@ -34,8 +36,13 @@ let getBody = async(questionNouns, answer) => {
 
   let result = await axios.get(url)
   const pageData = result.data.query.pages[Object.keys(result.data.query.pages)[0]].extract
-  let total = tally(pageData, answer)
-  return { answer: answer, count: tally(pageData, answer) }
+
+  let total = 0
+  questionNouns.forEach((noun) => {
+    total += tally(pageData, noun)
+  })
+
+  return { answer: answer, count: total }
 }
 
 let transfromResults = (results) => {

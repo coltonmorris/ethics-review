@@ -30,8 +30,9 @@ let evaluateQuorum = (methods, answers) => {
     answerWeights[answer] = { weights: [] }
   })
   _.map(methods, (method) => {
+    console.log('checcccc', method)
     _.mapValues(_.omit(method, ['method']), (value) => {
-      answerWeights[value.answer].weights.push(value.weight) 
+      answerWeights[value.answer].weights.push(value.weight)
     })
   })
 
@@ -46,7 +47,7 @@ let evaluateQuorum = (methods, answers) => {
   let middle = 0;
   let largest = 0;
   _.mapKeys(answerWeights, (value, key) => {
-    let count = 0 
+    let count = 0
     let sum = 0
     _.map(answerWeights[key].weights, (weight) => {
       sum += weight
@@ -74,7 +75,7 @@ let evaluateQuorum = (methods, answers) => {
 }
 
 export default (question, answers) => {
-  // pass each method the question and answers. They will return an object. Save that object 
+  // pass each method the question and answers. They will return an object. Save that object
 
   // TODO mock api calls for intensive testing. google locks us out
   // TODO make a method that just sleeps 10 seconds
