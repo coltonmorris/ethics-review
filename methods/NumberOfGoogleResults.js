@@ -16,6 +16,7 @@ export default (question, answers) => {
 }
 
 let getResults =  async (question, answer) => {
+  return { answer: answer, count: 10000 }
   let queryUrl = `https://www.google.com/search?q=${question} ${answer}`
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
