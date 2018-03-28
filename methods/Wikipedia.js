@@ -5,7 +5,6 @@ import { mergeMap, map } from 'rxjs/operators'
 import puppeteer from 'puppeteer'
 
 
-
 export default (question, answers) => {
   return Observable.forkJoin(
     ..._.map(answers, (answer) => (
@@ -48,10 +47,13 @@ let transfromResults = (results) => {
   let sum = _.reduce(results, (val, ele) => (val + parseInt(ele.count)), 0)
 
   let final = {
-    smallest: { answer: results[0].answer, weight: results[0].count/sum },
-    middle: { answer: results[1].answer, weight: results[1].count/sum },
-    largest: { answer: results[results.length-1].answer, weight: results[results.length-1].count/sum },
-    method: 'numberOfGoogleResults',
+    // smallest: { answer: results[0].answer, weight: results[0].count/sum },
+    // middle: { answer: results[1].answer, weight: results[1].count/sum },
+    // largest: { answer: results[results.length-1].answer, weight: results[results.length-1].count/sum },
+    smallest: { answer: results[0].answer, weight: 0.01 },
+    middle: { answer: results[1].answer, weight: 0.09 },
+    largest: { answer: results[results.length-1].answer, weight: 0.9 },
+    method: 'wikipedia',
   }
   return final
 }
