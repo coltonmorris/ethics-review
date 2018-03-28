@@ -91,7 +91,7 @@ export default (question, answers) => {
 }
 
 let printQuorumResult = (result) => {
-  console.log('\t\t\tQuorum Result:'.black)
+  console.log('\tQuorum Result:'.black)
 
   _.mapKeys(result, (value, key) => {
     if (key == 'finalGuess') {
@@ -116,5 +116,5 @@ let printMethodResult = (method) => {
 }
 
 let printResult = (color, result) => {
-  console.log('\t',result.answer, color(result.weight))
+  console.log('\t',result.answer, '\t', color(result.weight || result.averageWeight))
 }
