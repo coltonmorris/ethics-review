@@ -30,7 +30,6 @@ let evaluateQuorum = (methods, answers) => {
     answerWeights[answer] = { weights: [] }
   })
   _.map(methods, (method) => {
-    console.log('checcccc', method)
     _.mapValues(_.omit(method, ['method']), (value) => {
       answerWeights[value.answer].weights.push(value.weight)
     })

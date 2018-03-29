@@ -30,11 +30,7 @@ let getNouns = async(question) => {
   return await wordpos.getNouns(question, nouns => nouns)
 }
 
-function occurrences(string, subString, allowOverlapping, filename) {
-  console.log('searching substring', subString)
-  fs.writeFile(filename+'.txt', string, function (err) {
-    if (err) throw err;
-  })
+function occurrences(string, subString, allowOverlapping) {
   string += "";
   subString += "";
   if (subString.length <= 0) return (string.length + 1);
@@ -54,10 +50,29 @@ function occurrences(string, subString, allowOverlapping, filename) {
 }
 
 let getBody = async(questionNouns, answer) => {
-  let transAnswer = _.replace(_.escape(answer), " ", "%20")
+  let transAnswer = _.escape(answer)
+  let transAnswer1 = answer.replace(/ /g,'_')
+  let transAnswer2 = _.map(answer.split(' '), (word) => _.startCase(_.toLower(word))).join(' ')
   let url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&titles=${transAnswer}`
 
   let result = await axios.get(url)
+
+  if(Object.keys(result.data.query.pages)[0] == -1){
+    transAnswer = _.startCase(_.toLower(transAnswer))
+    url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&titles=${transAnswer}`
+    result = await axios.get(url)
+  }
+  if(Object.keys(result.data.query.pages)[0] == -1){
+    transAnswer = transAnswer1
+    url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&titles=${transAnswer}`
+    result = await axios.get(url)
+  }
+  if(Object.keys(result.data.query.pages)[0] == -1){
+    transAnswer = transAnswer2
+    url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&titles=${transAnswer}`
+    result = await axios.get(url)
+  }
+
   const pageData = result.data.query.pages[Object.keys(result.data.query.pages)[0]]
   let body
   if(pageData.hasOwnProperty('missing')){
@@ -68,15 +83,13 @@ let getBody = async(questionNouns, answer) => {
 
   let total = 0
   questionNouns.forEach((noun) => {
-    console.log('noun', noun, occurrences(body, noun, false))
-    total += occurrences(body, noun, false, answer)
+    total += occurrences(body, noun, false)
   })
 
   return { answer: answer, count: total }
 }
 
 let transfromResults = (results) => {
-  console.log('hckjlekrj', results)
   results.sort((a,b) => {
     a = parseInt(a.count)
     b = parseInt(b.count)
