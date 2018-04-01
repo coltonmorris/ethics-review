@@ -5,7 +5,8 @@ With mass psychological manipulation at the fore-front of computer science ethic
 ## Setup
 
 ```bash
-screencapture -i tmp.jpg && ./script.sh
+make run
+
 ```
 
 
