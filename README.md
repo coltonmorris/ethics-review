@@ -5,6 +5,7 @@ With mass psychological manipulation at the fore-front of computer science ethic
 ## Setup
 
 ```bash
+go build .
 make run
 
 ```
