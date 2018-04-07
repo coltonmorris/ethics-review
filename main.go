@@ -50,6 +50,7 @@ func parseQandA(path string) (m.QandA, error) {
 		text := scanner.Text()
 		text = strings.Trim(text, " \n\t")
 
+		// TODO: handle multiline answers?
 		if len(text) != 0 {
 			if !questionParsed {
 				qna.Question += text
