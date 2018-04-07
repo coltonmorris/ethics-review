@@ -8,30 +8,29 @@ import (
 	"strings"
 )
 
-
 func runQuorum(qna *m.QandA) *m.QuorumResults {
-  doneChannel := make(chan *m.MethodResults, len(m.StartMethods))
+	doneChannel := make(chan *m.MethodResults, len(m.StartMethods))
 
-  // start methods
-  for _, method := range m.StartMethods {
-    go m.Start(method, qna, doneChannel)
-  }
+	// start methods
+	for _, method := range m.StartMethods {
+		go m.Start(method, qna, doneChannel)
+	}
 
-  var methods []*m.MethodResults
+	var methods []*m.MethodResults
 
-  for i := 1; i <= len(m.StartMethods); i++ {
-    method := <-doneChannel
-    methods = append(methods, method)
-  }
+	for i := 1; i <= len(m.StartMethods); i++ {
+		method := <-doneChannel
+		methods = append(methods, method)
+	}
 
-  quorum := &m.QuorumResults{
-    Qna:     qna,
-    Methods: methods,
-    // TODO calculate this by doing an average
-    FinalAnswer: []float64{0.8, 0.15, 0.05}}
+	quorum := &m.QuorumResults{
+		Qna:     qna,
+		Methods: methods,
+		// TODO calculate this by doing an average
+		FinalAnswer: []float64{0.8, 0.15, 0.05}}
 
-  close(doneChannel)
-  return quorum
+	close(doneChannel)
+	return quorum
 }
 
 func parseQandA(path string) (m.QandA, error) {
@@ -75,6 +74,6 @@ func main() {
 		return
 	}
 
-  quorumResults := runQuorum(&qna)
-  PrintQuorumResults(quorumResults)
+	quorumResults := runQuorum(&qna)
+	PrintQuorumResults(quorumResults)
 }
