@@ -27,10 +27,10 @@ func GetWikipedia(answer string) (string, error) {
 
 func GetNumberOfOccurences(c chan<- PageResult, answer string, nouns []string) {
 	count := 0
-	wikiBody, _ := GetWikipedia(strings.Title(answer)) // TODO: check for error
+	wikiBody, _ := GetWikipedia(answer) // TODO: check for error
 
 	if len(wikiBody) < 113*len(answer)*3 { // if its too short, try titlecase
-		wikiBody, _ = GetWikipedia(answer)
+		wikiBody, _ = GetWikipedia(strings.Title(answer))
 	}
 
 	for _, noun := range nouns {
