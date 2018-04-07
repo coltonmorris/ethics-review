@@ -8,41 +8,34 @@ import (
 	"strings"
 )
 
-type QandA struct {
-	question string
-	answers  []string
+
+func runQuorum(qna *m.QandA) {
+  doneChannel := make(chan *m.MethodResults, len(m.StartMethods))
+
+  // start methods
+  for _, method := range m.StartMethods {
+    go m.Start(method, qna, doneChannel)
+  }
+
+  var methods []*m.MethodResults
+
+  for i := 1; i <= len(m.StartMethods); i++ {
+    method := <-doneChannel
+    methods = append(methods, method)
+  }
+
+  quorum := &m.QuorumResults{
+    Qna:     qna,
+    Methods: methods,
+    // TODO calculate this by doing an average
+    FinalAnswer: []float64{0.8, 0.15, 0.05}}
+
+  PrintQuorumResults(quorum)
+  close(doneChannel)
 }
 
-type QuorumResults struct {
-	qna         *QandA
-	methods     []*m.MethodResults
-	finalAnswer []float64
-}
-
-func runQuorum(qna *QandA) *QuorumResults {
-
-	quorum := &QuorumResults{
-		qna:     qna,
-		methods: m.Methods,
-		// TODO calculate this by doing an average
-		finalAnswer: []float64{0.8, 0.15, 0.05}}
-
-	// TODO start here when you finish a method
-	// for _, method := range quorum.methods {
-	// go method.start(qna, doneChannel)
-	// }
-	// listen for a method to finish and print it's results
-	// go func() {
-	//  doneChannel <- result
-	//  PrintQuorumResults(calculateQuorumResults())
-	//
-	// }
-
-	return quorum
-}
-
-func parseQandA(path string) (QandA, error) {
-	var qna QandA
+func parseQandA(path string) (m.QandA, error) {
+	var qna m.QandA
 
 	file, err := os.Open(path)
 	if err != nil {
@@ -59,9 +52,9 @@ func parseQandA(path string) (QandA, error) {
 
 		if len(text) != 0 {
 			if !questionParsed {
-				qna.question += text
+				qna.Question += text
 			} else {
-				qna.answers = append(qna.answers, text)
+				qna.Answers = append(qna.Answers, text)
 			}
 
 			if len(text) != 0 && text[len(text)-1] == '?' {
@@ -81,7 +74,5 @@ func main() {
 		return
 	}
 
-	quorumResults := runQuorum(&qna)
-
-	PrintQuorumResults(quorumResults)
+	runQuorum(&qna)
 }
