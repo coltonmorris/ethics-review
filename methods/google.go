@@ -32,10 +32,6 @@ func Goog(r []string, q string) []float64 {
 			c2 := strings.Replace(c, ",", "", 10)
 			c3 := strings.Split(c2, " ")
 			c4, _ := strconv.Atoi(c3[1])
-			// if err != nil {
-			// 	fmt.Println("BOOM")
-			// 	c4 = 0 
-			// }
 			cnts <- &resp{Name: n, Count: c4}
 		})
 

@@ -27,9 +27,8 @@ func Bing(r []string, q string) []float64 {
 			cnts <- &resp{Name: n, Count: 0}
 		})
 
-		c.OnHTML("#b_content", func(e *colly.HTMLElement) {
-			fmt.Println("$$$$$$$$")
-			c := e.ChildText(".sb_count")
+		c.OnHTML("#b_content .sb_count", func(e *colly.HTMLElement) {
+			c := e.Text
 			c2 := strings.Replace(c, ",", "", 10)
 			c3 := strings.Split(c2, " ")
 			c4, _ := strconv.Atoi(c3[0])
