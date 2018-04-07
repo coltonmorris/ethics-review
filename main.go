@@ -9,7 +9,7 @@ import (
 )
 
 
-func runQuorum(qna *m.QandA) {
+func runQuorum(qna *m.QandA) *m.QuorumResults {
   doneChannel := make(chan *m.MethodResults, len(m.StartMethods))
 
   // start methods
@@ -30,8 +30,8 @@ func runQuorum(qna *m.QandA) {
     // TODO calculate this by doing an average
     FinalAnswer: []float64{0.8, 0.15, 0.05}}
 
-  PrintQuorumResults(quorum)
   close(doneChannel)
+  return quorum
 }
 
 func parseQandA(path string) (m.QandA, error) {
@@ -74,5 +74,6 @@ func main() {
 		return
 	}
 
-	runQuorum(&qna)
+  quorumResults := runQuorum(&qna)
+  PrintQuorumResults(quorumResults)
 }
