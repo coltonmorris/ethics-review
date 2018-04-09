@@ -31,7 +31,8 @@ var StartMethods []StartFunc
 
 func init() {
 
-	StartMethods = []StartFunc{startBing, startGoogle, startWikipedia}
+	// StartMethods = []StartFunc{startWikipedia}
+  StartMethods = []StartFunc{startBing, startGoogle, startWikipedia}
 }
 
 
@@ -43,9 +44,10 @@ type resp struct {
 func getNormalResponses(c chan *resp, r []string) []float64 {
 	results := []*resp{}
 
+  fmt.Println("len of r: ",len(r))
 	for i := 0; i < 3; i++ {
 		q := <- c
-		fmt.Println(q)
+    fmt.Println("recieved result: ",q)
 		results = append(results, q)
 	}
 

@@ -8,6 +8,32 @@ import (
 	"strings"
 )
 
+func calculateFinalAnswer(methods []*m.MethodResults) []float64 {
+  finalAnswer := []float64{0,0,0}
+  total := []float64{0,0,0}
+  for _, method := range methods {
+    for i := 0; i < 3; i++ {
+      total[i] += method.Results[i]
+    }
+  }
+
+  // calculate average
+  var sumOfTotal float64 = 0
+  for i := 0; i < 3; i++ {
+    if total[i] != 0 {
+      finalAnswer[i] = total[i]/3
+      sumOfTotal += finalAnswer[i]
+    }
+  }
+
+  // normalize
+  for i := 0; i < len(total); i++ {
+    finalAnswer[i] = finalAnswer[i]/sumOfTotal
+  }
+
+  return finalAnswer
+}
+
 func runQuorum(qna *m.QandA) *m.QuorumResults {
 	doneChannel := make(chan *m.MethodResults, len(m.StartMethods))
 
@@ -23,11 +49,13 @@ func runQuorum(qna *m.QandA) *m.QuorumResults {
 		methods = append(methods, method)
 	}
 
+  PrintMethodResults(qna, methods[0])
+
 	quorum := &m.QuorumResults{
 		Qna:     qna,
 		Methods: methods,
 		// TODO calculate this by doing an average
-		FinalAnswer: []float64{0.8, 0.15, 0.05}}
+    FinalAnswer: calculateFinalAnswer(methods)}
 
 	close(doneChannel)
 	return quorum
@@ -63,6 +91,7 @@ func parseQandA(path string) (m.QandA, error) {
 		}
 	}
 
+  PrintQandA(&qna)
 	return qna, scanner.Err()
 }
 

@@ -18,7 +18,7 @@ func Goog(r []string, q string) []float64 {
 			colly.IgnoreRobotsTxt(),
 		)
 		c.OnRequest(func(r *colly.Request) {
-			fmt.Println("Visiting", r.URL)
+			// fmt.Println("Visiting", r.URL)
 		})
 
 		n := r[i]
@@ -32,6 +32,7 @@ func Goog(r []string, q string) []float64 {
 			c2 := strings.Replace(c, ",", "", 10)
 			c3 := strings.Split(c2, " ")
 			c4, _ := strconv.Atoi(c3[1])
+      fmt.Println("returning result: ", n, c4)
 			cnts <- &resp{Name: n, Count: c4}
 		})
 
@@ -50,9 +51,8 @@ func Goog(r []string, q string) []float64 {
 var startGoogle StartFunc = func(qna *QandA, doneChannel chan *MethodResults) {
 	var googleMethod = &MethodResults{
 		Name:    "GoogleResults",
-		Results: Goog(qna.Answers, qna.Question),
-	}
+		Results: Goog(qna.Answers, qna.Question)}
+    // Results: []float64{0.2,0.3,0.5}}
 
 	doneChannel <- googleMethod
-	fmt.Println("Google")
 }

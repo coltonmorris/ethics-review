@@ -18,7 +18,7 @@ func Bing(r []string, q string) []float64 {
 			colly.IgnoreRobotsTxt(),
 		)
 		c.OnRequest(func(r *colly.Request) {
-			fmt.Println("Visiting", r.URL)
+			// fmt.Println("Visiting", r.URL)
 		})
 
 		n := r[i]
@@ -50,9 +50,8 @@ func Bing(r []string, q string) []float64 {
 var startBing StartFunc = func(qna *QandA, doneChannel chan *MethodResults) {
 	var bingMethod = &MethodResults{
 		Name:    "BingResults",
-		Results: Bing(qna.Answers, qna.Question),
-	}
+		Results: Bing(qna.Answers, qna.Question)}
+    // Results: []float64{0.2,0.3,0.5}}
 
 	doneChannel <- bingMethod
-	fmt.Println("Bing")
 }

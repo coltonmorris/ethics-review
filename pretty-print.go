@@ -40,5 +40,5 @@ func PrintMethodResults(qna *m.QandA, method *m.MethodResults) {
 
 func PrintQandA(qna *m.QandA) {
 	fmt.Printf("Question: %s\n", blue(qna.Question))
-	fmt.Printf("Answers: \t%s\n \t\t%s\n \t\t%s\n", blue(qna.Answers[0]), blue(qna.Answers[1]), blue(qna.Answers[2]))
+	fmt.Printf("Answers: \t%s,\n \t\t%s,\n \t\t%s,\n", blue(qna.Answers[0]), blue(qna.Answers[1]), blue(qna.Answers[2]))
 }

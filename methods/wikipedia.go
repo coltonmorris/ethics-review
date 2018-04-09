@@ -46,14 +46,16 @@ func GetNumberOfOccurences(c chan<- PageResult, answer string, nouns []string) {
 }
 
 func CalculateWeights(results [3]int) []float64 {
-	total := 0
+	var total float64 = 0
 	for _, num := range results {
-		total += num
+		total += float64(num)
 	}
 
-	var weights []float64
-	for _, val := range results {
-		weights = append(weights, float64(val)/float64(total))
+  weights := []float64{0,0,0}
+  for i :=0; i < len(results); i++ {
+    if total != 0 {
+      weights[i] = float64(results[i])/total
+    }
 	}
 
 	return weights
