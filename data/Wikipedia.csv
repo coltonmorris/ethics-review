@@ -1,2 +1,13 @@
 question,answer0,answer1,answer2,weight0,weight1,weight2,correctAnswerIndex,guessedAnswerIndex
 "Which ""profession"" wouldnormally use a Bristolboard?","""Chemist""",Gardener,Artist,0.000000,0.000000,0.000000,1,2
+Which of these is a commoncircus act?,DJ battle,History lecture,Human cannonball,0.000000,0.000000,0.000000,2,2
+What character appears onstickers that warn childrenof poisons?,Mr. Yum,Mr. Yuk,Mr. D. Lishus,0.000000,0.000000,0.000000,1,2
+What color is in the middleof most three-color trafﬁclights?,Yellow,Green,Red,0.280822,0.268836,0.450342,0,2
+What is the ofﬁcial languageof Brazil?,Spanish,French,Portuguese,0.000000,0.000000,0.000000,2,2
+Which of the followingpastas literally translates to“little ears”?,Rotelle,Ricciolini,Orecchiette,0.000000,0.000000,1.000000,2,2
+What are the scientists on“The Muppet Show” namedfor?,Lab equipment,Astronomers,Universities,0.000000,0.000000,0.000000,0,2
+What shape are the faces ofan octahedron?,Tra pezoids,Pentagons,Triangles,0.000000,0.000000,0.000000,2,2
+Which is NOT the name of aMarx Brother?,Zeppo,Gummo,Jocko,0.000000,0.500000,0.500000,2,1
+"When put side by side,which two state postalabbreviations form a postalword?",Mississippi / Iowa,Missouri / Nebraska,Massachusetts / Illinois,0.000000,0.000000,0.000000,2,2
+Which US state's capital liesat the highest altitude?,Colorado,Wyoming,New Mexico,0.560976,0.439024,0.000000,2,0
+What did Mr. Potato Headgive to C. Everett Koop at a19805 press event?,Plant,Plaque,Pipe,0.333333,0.000000,0.666667,2,2

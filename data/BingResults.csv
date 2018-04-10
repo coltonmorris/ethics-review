@@ -1,2 +1,13 @@
 question,answer0,answer1,answer2,weight0,weight1,weight2,correctAnswerIndex,guessedAnswerIndex
 "Which ""profession"" wouldnormally use a Bristolboard?","""Chemist""",Gardener,Artist,0.212143,0.248720,0.539137,1,2
+Which of these is a commoncircus act?,DJ battle,History lecture,Human cannonball,0.089530,0.887709,0.022762,2,1
+What character appears onstickers that warn childrenof poisons?,Mr. Yum,Mr. Yuk,Mr. D. Lishus,0.937194,0.030867,0.031939,1,0
+What color is in the middleof most three-color trafﬁclights?,Yellow,Green,Red,0.126688,0.386383,0.486929,0,2
+What is the ofﬁcial languageof Brazil?,Spanish,French,Portuguese,0.009504,0.005530,0.984966,2,2
+Which of the followingpastas literally translates to“little ears”?,Rotelle,Ricciolini,Orecchiette,0.357688,0.374046,0.268266,2,1
+What are the scientists on“The Muppet Show” namedfor?,Lab equipment,Astronomers,Universities,0.873415,0.017381,0.109204,0,0
+What shape are the faces ofan octahedron?,Tra pezoids,Pentagons,Triangles,0.002582,0.182635,0.814782,2,2
+Which is NOT the name of aMarx Brother?,Zeppo,Gummo,Jocko,0.396411,0.331158,0.272431,2,0
+"When put side by side,which two state postalabbreviations form a postalword?",Mississippi / Iowa,Missouri / Nebraska,Massachusetts / Illinois,0.308492,0.346620,0.344887,2,1
+Which US state's capital liesat the highest altitude?,Colorado,Wyoming,New Mexico,0.583691,0.310443,0.105866,2,0
+What did Mr. Potato Headgive to C. Everett Koop at a19805 press event?,Plant,Plaque,Pipe,0.188579,0.708059,0.103362,2,1
