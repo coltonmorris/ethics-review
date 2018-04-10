@@ -24,6 +24,7 @@ make run
 
 
 ## TODO
+1. Gather data for quorum prediction
 2. pre-processors (noun extract, NOT, and "quoted text")
 3. visual graph
 4. auto-scrape img
