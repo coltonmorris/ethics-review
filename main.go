@@ -1,37 +1,40 @@
 package main
 
-import m "github.com/coltonmorris/ethics-review/methods"
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
+
+	m "github.com/coltonmorris/ethics-review/methods"
+	"github.com/manifoldco/promptui"
 )
 
 func calculateFinalAnswer(methods []*m.MethodResults) []float64 {
-  finalAnswer := []float64{0,0,0}
-  total := []float64{0,0,0}
-  for _, method := range methods {
-    for i := 0; i < 3; i++ {
-      total[i] += method.Results[i]
-    }
-  }
+	finalAnswer := []float64{0, 0, 0}
+	total := []float64{0, 0, 0}
+	for _, method := range methods {
+		for i := 0; i < 3; i++ {
+			total[i] += method.Results[i]
+		}
+	}
 
-  // calculate average
-  var sumOfTotal float64 = 0
-  for i := 0; i < 3; i++ {
-    if total[i] != 0 {
-      finalAnswer[i] = total[i]/3
-      sumOfTotal += finalAnswer[i]
-    }
-  }
+	// calculate average
+	var sumOfTotal float64 = 0
+	for i := 0; i < 3; i++ {
+		if total[i] != 0 {
+			finalAnswer[i] = total[i] / 3
+			sumOfTotal += finalAnswer[i]
+		}
+	}
 
-  // normalize
-  for i := 0; i < len(total); i++ {
-    finalAnswer[i] = finalAnswer[i]/sumOfTotal
-  }
+	// normalize
+	for i := 0; i < len(total); i++ {
+		finalAnswer[i] = finalAnswer[i] / sumOfTotal
+	}
 
-  return finalAnswer
+	return finalAnswer
 }
 
 func runQuorum(qna *m.QandA) *m.QuorumResults {
@@ -49,13 +52,13 @@ func runQuorum(qna *m.QandA) *m.QuorumResults {
 		methods = append(methods, method)
 	}
 
-  PrintMethodResults(qna, methods[0])
+	PrintMethodResults(qna, methods[0])
 
 	quorum := &m.QuorumResults{
 		Qna:     qna,
 		Methods: methods,
 		// TODO calculate this by doing an average
-    FinalAnswer: calculateFinalAnswer(methods)}
+		FinalAnswer: calculateFinalAnswer(methods)}
 
 	close(doneChannel)
 	return quorum
@@ -91,8 +94,32 @@ func parseQandA(path string) (m.QandA, error) {
 		}
 	}
 
-  PrintQandA(&qna)
+	PrintQandA(&qna)
 	return qna, scanner.Err()
+}
+
+func getCorrectAnswer(quorumResults *m.QuorumResults) (int, error) {
+	answers := quorumResults.Qna.Answers
+
+	prompt := promptui.Select{
+		Label: "Select Correct Answer",
+		Items: answers,
+	}
+
+	_, result, err := prompt.Run()
+
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+		return -1, err
+	}
+
+	for i, ele := range answers {
+		if result == ele {
+			return i, nil
+		}
+	}
+  fmt.Println("1")
+	return -1, errors.New("Index out of range")
 }
 
 func main() {
@@ -104,5 +131,13 @@ func main() {
 	}
 
 	quorumResults := runQuorum(&qna)
+
 	PrintQuorumResults(quorumResults)
+
+	correctIndex, err := getCorrectAnswer(quorumResults)
+	if err != nil {
+    fmt.Println("error getting correct answer: ", correctIndex, err)
+    return
+	}
+  saveQuorumToCsv(quorumResults, correctIndex)
 }

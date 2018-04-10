@@ -1,0 +1,2 @@
+question,answer0,answer1,answer2,weight0,weight1,weight2,correctAnswerIndex,guessedAnswerIndex
+"Which ""profession"" wouldnormally use a Bristolboard?","""Chemist""",Gardener,Artist,0.212143,0.248720,0.539137,1,2

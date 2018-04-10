@@ -24,9 +24,8 @@ make run
 
 
 ## TODO
-+ Parse `ocr_output.txt`
-+ reimplement google results
-+ reimplement bing results
-+ reimplement smart wikipedia results
-+ quorum average function that generates a final guess
-
+2. pre-processors (noun extract, NOT, and "quoted text")
+3. visual graph
+4. auto-scrape img
+5. wiki-offline (ES)
+6. proxy-anti-ban

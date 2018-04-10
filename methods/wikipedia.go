@@ -93,11 +93,12 @@ var startWikipedia StartFunc = func(qna *QandA, doneChannel chan *MethodResults)
 	}
 
 	// calculate the weights
-	weights := CalculateWeights(numbers)
+  weights := CalculateWeights(numbers)
 
 	methodResults := &MethodResults{
 		Name:    "Wikipedia",
-		Results: weights,
+		// Results: []float64{0.2,0.3,0.5},
+    Results: weights,
 	}
 
 	doneChannel <- methodResults

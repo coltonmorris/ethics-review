@@ -29,13 +29,6 @@ type QuorumResults struct {
 var Methods []*MethodResults
 var StartMethods []StartFunc
 
-func init() {
-
-	// StartMethods = []StartFunc{startWikipedia}
-  StartMethods = []StartFunc{startBing, startGoogle, startWikipedia}
-}
-
-
 type resp struct {
 	Name  string
 	Count int
@@ -82,4 +75,9 @@ func RandomString() string {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
 	}
 	return string(b)
+}
+
+func init() {
+  // StartMethods = []StartFunc{startWikipedia}
+  StartMethods = []StartFunc{startBing, startGoogle, startWikipedia}
 }
