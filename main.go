@@ -6,12 +6,49 @@ import (
 	"fmt"
 	"os"
 	"strings"
+  "log"
 
 	m "github.com/coltonmorris/ethics-review/methods"
 	"github.com/manifoldco/promptui"
 )
 
-func calculateFinalAnswer(methods []*m.MethodResults) []float64 {
+
+func calculateFinalAnswerCsvAverage(methods []*m.MethodResults) []float64 {
+  methodPredictions := getMethodPredictionAverages(methods) 
+
+
+  total := []float64{0, 0, 0}
+  weightedTotal := []float64{0, 0, 0}
+  var methodPredictionIndex int
+  for _, method := range methods {
+    methodPredictionIndex = -1
+    for j, prediction := range methodPredictions {
+      if prediction.Name == method.Name {
+        methodPredictionIndex = j
+      }
+    }
+    if methodPredictionIndex == -1 {
+      log.Fatal("could not pair a prediction with a method")
+    }
+
+    for i := 0; i < 3; i++ {
+      // each answer has it's own total
+      weightedTotal[i] += methodPredictions[methodPredictionIndex].Average*method.Results[i]
+    }
+  }
+
+  // normalize
+  var sumOfTotal float64 = 0
+  finalAnswer := []float64{0, 0, 0}
+  for i := 0; i < len(total); i++ { sumOfTotal += weightedTotal[i] }
+  for i := 0; i < len(total); i++ {
+    finalAnswer[i] = weightedTotal[i] / sumOfTotal
+  }
+
+  return finalAnswer
+}
+
+func calculateFinalAnswerAverage(methods []*m.MethodResults) []float64 {
 	finalAnswer := []float64{0, 0, 0}
 	total := []float64{0, 0, 0}
 	for _, method := range methods {
@@ -47,18 +84,20 @@ func runQuorum(qna *m.QandA) *m.QuorumResults {
 
 	var methods []*m.MethodResults
 
+  // TODO account for slow or errors
 	for i := 1; i <= len(m.StartMethods); i++ {
 		method := <-doneChannel
 		methods = append(methods, method)
 	}
+
+  // TODO don't keeps methods that predict 0 for everything
 
 	PrintMethodResults(qna, methods[0])
 
 	quorum := &m.QuorumResults{
 		Qna:     qna,
 		Methods: methods,
-		// TODO calculate this by doing an average
-		FinalAnswer: calculateFinalAnswer(methods)}
+		FinalAnswer: calculateFinalAnswerCsvAverage(methods)}
 
 	close(doneChannel)
 	return quorum

@@ -31,6 +31,7 @@ func PrintFinalAnswer(qna *m.QandA, finalAnswer []float64) {
 
 func PrintMethodResults(qna *m.QandA, method *m.MethodResults) {
 	smallest, middle, largest := IndexOfSmallMiddleLarge(method.Results)
+  fmt.Println("Indexes of (smallest, middle, largest) : (", smallest, ", ", middle, ", ", largest, ")")
 
 	fmt.Printf("Method: %s\n", blue(method.Name))
 	fmt.Printf("\tSmallest: %s\n", red(method.Results[smallest], "\t ", qna.Answers[smallest]))

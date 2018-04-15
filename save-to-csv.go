@@ -6,11 +6,29 @@ import (
   "path/filepath"
 	"fmt"
   "log"
+  "io"
 	"os"
 	"strconv"
 
   m "github.com/coltonmorris/ethics-review/methods"
 )
+
+type MethodPrediction struct {
+  Name string
+  Average float64 
+}
+
+type CsvRecord struct {
+  question string 
+  answer0 string 
+  answer1 string 
+  answer2 string 
+  weight0 float64 
+  weight1 float64 
+  weight2 float64 
+  correctAnswerIndex int 
+  guessedAnswerIndex int 
+}
 
 func saveQuorumToCsv(quorumResults *m.QuorumResults, correctIndex int) {
 	// TODO save the actual quorum prediction
@@ -54,23 +72,68 @@ func saveQuorumToCsv(quorumResults *m.QuorumResults, correctIndex int) {
 		}
 
 		record := []string{quorumResults.Qna.Question, quorumResults.Qna.Answers[0], quorumResults.Qna.Answers[1], quorumResults.Qna.Answers[2]}
+
+    var count float64 = 0
 		for _, result := range method.Results {
+      if result == 0 { count += 1 }
 			record = append(record, fmt.Sprintf("%.6f", result))
 		}
-		record = append(record, strconv.Itoa(correctIndex))
+    
+    // ignore records that predict 0 for all the weights
+    if count != 3 {
+      record = append(record, strconv.Itoa(correctIndex))
 
-		_, _, large := IndexOfSmallMiddleLarge(method.Results)
-		record = append(record, strconv.Itoa(large))
+      _, _, large := IndexOfSmallMiddleLarge(method.Results)
+      record = append(record, strconv.Itoa(large))
 
-		err := w.Write(record)
-		if err != nil {
-			log.Fatalln("error writing record to csv:", err)
-		}
+      err := w.Write(record)
+      if err != nil {
+        log.Fatalln("error writing record to csv:", err)
+      }
 
-    w.Flush()	// Write any buffered data to the underlying writer (standard output).
+      w.Flush()	// Write any buffered data to the underlying writer (standard output).
 
-    if err := w.Error(); err != nil {
-      log.Fatal("yup: ", err)
+      if err := w.Error(); err != nil {
+        log.Fatal("yup: ", err)
+      }
     }
 	}
+}
+
+func getMethodPredictionAverages(methods []*m.MethodResults) []*MethodPrediction {
+  methodPredictions := []*MethodPrediction{}
+
+  // read from data
+  for _, method := range methods {
+    filename := "data/" + method.Name + ".csv"
+    csvFile, _ := os.Open(filename)
+    defer csvFile.Close()
+    reader := csv.NewReader(bufio.NewReader(csvFile))
+
+    var lines float64 = 0
+    var correctCount float64 = 0
+    for {
+      line, error := reader.Read()
+      if error == io.EOF {
+        break
+      } else if error != nil {
+        log.Fatal(error)
+      }
+
+      // weight0, _ := strconv.ParseFloat(line[4], 64)
+      // weight1, _ := strconv.ParseFloat(line[5], 64)
+      // weight2, _ := strconv.ParseFloat(line[6], 64)
+      correctAnswerIndex, _ :=strconv.Atoi(line[7])
+      guessedAnswerIndex, _ :=strconv.Atoi(line[8])
+
+      if correctAnswerIndex == guessedAnswerIndex { correctCount += 1 }
+      lines += 1
+    }
+
+    if lines == 0 { log.Fatal("No data in method") }
+
+    methodPredictions = append(methodPredictions, &MethodPrediction{ Name: method.Name, Average: correctCount/lines })
+  }
+
+  return methodPredictions
 }
