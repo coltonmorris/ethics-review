@@ -24,14 +24,14 @@ make
 
 
 ## TODO
-1. Only use wiki when answers arent 0
-1. Gather data for quorum prediction, and use the last prediction weights rather than calculating each time
+1. ~~Only use wiki when answers arent 0~~
+1. Record data for quorum prediction, and use the last prediction weights rather than calculating each time
 2. Handle failed methods
 3. Handle slow methods
 3. pre-processors (noun extract, NOT, and "quoted text")
 4. visual graph
-5. auto-scrape img
-6. wiki-offline (ES)
+5. auto-scrape img rather than human doing a screenshot each time
+6. wiki-offline (ElasticSearch)
 7. proxy-anti-ban
 
 
