@@ -90,9 +90,9 @@ func runQuorum(qna *m.QandA) *m.QuorumResults {
 		methods = append(methods, method)
 	}
 
-  // TODO don't keeps methods that predict 0 for everything
-
-	PrintMethodResults(qna, methods[0])
+  // don't keeps methods that predict 0 for everything
+  finalMethods := removeEmptyMethodResults(methods)
+  PrintMethodResults(qna, finalMethods[0])
 
 	quorum := &m.QuorumResults{
 		Qna:     qna,
@@ -101,6 +101,27 @@ func runQuorum(qna *m.QandA) *m.QuorumResults {
 
 	close(doneChannel)
 	return quorum
+}
+
+func removeEmptyMethodResults(methods []*m.MethodResults) []*m.MethodResults {
+  var finalMethods []*m.MethodResults
+  var indexes []int
+  for i, method := range methods {
+    count := 0
+    for _, result := range method.Results {
+      if result == 0 {
+        count++
+      }
+    }
+    if count < 3 {
+      indexes = append(indexes, i)
+    }
+  }
+  for _, index := range indexes {
+    finalMethods = append(finalMethods, methods[index])
+  }
+
+  return finalMethods
 }
 
 func parseQandA(path string) (m.QandA, error) {
