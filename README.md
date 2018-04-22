@@ -1,8 +1,9 @@
+# The App is now blocking any screen mirroring from happening. The project is now at a standstill until a solution can be created
+
 # Ethics Review
 
 With mass psychological manipulation at the fore-front of computer science ethics, it's time to explore another ethics problem by cheating at a trivia game.
 
-**The App is now blocking any screen mirroring from happening. The project is now at a standstill until a solution can be created**
 
 ## Setup
 
